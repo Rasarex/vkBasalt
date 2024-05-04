@@ -1,8 +1,11 @@
 #include "config.hpp"
 #include "config_paths.hpp"
 
+#include <cstdint>
+#include <format>
 #include <sstream>
 #include <locale>
+#include <cstdlib>
 
 namespace vkBasalt
 {
@@ -188,6 +191,23 @@ namespace vkBasalt
             while (getline(stringStream, newString, ':'))
             {
                 result.push_back(newString);
+            }
+        }
+    }
+    float Config::parseOption(const std::string& option,uint32_t offset)
+    {
+        auto found = options.find(option);
+        if (found != options.end())
+        {
+            std::stringstream stringStream(found->second);
+            std::string       newString;
+            size_t i = 0;
+            while (getline(stringStream, newString, ','))
+            {
+              if(i == offset){
+                return atof(newString.c_str());
+              }
+              i++;
             }
         }
     }

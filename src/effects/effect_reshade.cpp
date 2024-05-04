@@ -9,6 +9,7 @@
 #include <variant>
 #include <algorithm>
 
+#include "config.hpp"
 #include "image_view.hpp"
 #include "descriptor_set.hpp"
 #include "buffer.hpp"
@@ -563,14 +564,14 @@ namespace vkBasalt
             std::vector<VkSpecializationMapEntry> specMapEntrys;
             std::vector<char>                     specData;
 
-            for (uint32_t specId = 0, offset = 0; auto &opt : module.spec_constants)
+            for (uint32_t specId = 0, offset = 0; auto& opt : module.spec_constants)
             {
                 if (!opt.name.empty())
                 {
                     std::string val = pConfig->getOption<std::string>(opt.name);
                     if (!val.empty())
                     {
-                        std::variant<int32_t, uint32_t, float> convertedValue;
+                        std::variant<int32_t, uint32_t, float, vec3f> convertedValue;
                         offset = static_cast<uint32_t>(specData.size());
                         switch (opt.type.base)
                         {
@@ -593,11 +594,22 @@ namespace vkBasalt
                                 specMapEntrys.push_back({specId, offset, sizeof(uint32_t)});
                                 break;
                             case reshadefx::type::t_float:
-                                convertedValue = pConfig->getOption<float>(opt.name);
-                                specData.resize(offset + sizeof(float));
-                                std::memcpy(specData.data() + offset, &convertedValue, sizeof(float));
-                                specMapEntrys.push_back({specId, offset, sizeof(float)});
+                                if (val.find(",") != std::string::npos)
+                                {
+                                    convertedValue = pConfig->parseOption(opt.name,opt.offset);
+                                    specData.resize(offset + sizeof(float));
+                                    std::memcpy(specData.data() + offset + (opt.offset * sizeof(float)), &convertedValue, sizeof(float));
+                                    specMapEntrys.push_back({specId, offset, sizeof(float)});
+                                }
+                                else
+                                {
+                                    convertedValue = pConfig->getOption<float>(opt.name);
+                                    specData.resize(offset + sizeof(float));
+                                    std::memcpy(specData.data() + offset, &convertedValue, sizeof(float));
+                                    specMapEntrys.push_back({specId, offset, sizeof(float)});
+                                }
                                 break;
+                            case reshadefx::type::t_struct: Logger::info(opt.name); break;
                             default:
                                 // do nothing
                                 break;

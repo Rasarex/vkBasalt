@@ -10,6 +10,12 @@
 
 #include "vulkan_include.hpp"
 
+struct vec3f{
+  float r;
+  float g;
+  float b;
+};
+
 namespace vkBasalt
 {
     class Config
@@ -25,6 +31,7 @@ namespace vkBasalt
             parseOption(option, result);
             return result;
         }
+        float parseOption(const std::string& option,uint32_t offset);
 
     private:
         std::unordered_map<std::string, std::string> options;

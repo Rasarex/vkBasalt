@@ -30,14 +30,14 @@
 #include "logger.hpp"
 
 #include "effect.hpp"
-#include "effect_fxaa.hpp"
-#include "effect_cas.hpp"
-#include "effect_dls.hpp"
-#include "effect_smaa.hpp"
-#include "effect_deband.hpp"
-#include "effect_lut.hpp"
-#include "effect_reshade.hpp"
-#include "effect_transfer.hpp"
+#include "effects/effect_fxaa.hpp"
+#include "effects/effect_cas.hpp"
+#include "effects/effect_dls.hpp"
+#include "effects/effect_smaa.hpp"
+#include "effects/effect_deband.hpp"
+#include "effects/effect_lut.hpp"
+#include "effects/effect_reshade.hpp"
+#include "effects/effect_transfer.hpp"
 
 #define VKBASALT_NAME "VK_LAYER_VKBASALT_post_processing"
 
